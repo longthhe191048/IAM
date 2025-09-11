@@ -202,6 +202,7 @@ Default message: “This program cannot be run in DOS mode.”
 - .rdata: Contains read-only initialized data.
 - .reloc: Contains image relocation information.
 - .rsrc: Contains resources used by the program, these include images, icons or even embedded binaries.
+
 --> official document: [PE Format](https://learn.microsoft.com/en-us/windows/win32/debug/pe-format)
 
 ---
