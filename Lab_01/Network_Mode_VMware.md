@@ -46,10 +46,13 @@ There are 3 main type of network connection:
 
 ## Test with vmware
 
+* **NAT**
 <img width="1920" height="1042" alt="image" src="https://github.com/user-attachments/assets/ee8cf634-bdc5-4254-8db3-b0fe34ed1973" />
 
+* **Bridge**
 <img width="1920" height="1045" alt="image" src="https://github.com/user-attachments/assets/a7d2e928-f4a6-44f0-9b19-c2fc7f61db48" />
 
+* **Host only**
 <img width="1920" height="1041" alt="image" src="https://github.com/user-attachments/assets/bd70718d-dab6-43cf-a9e1-3205bd0743f0" />
 
 ## Reference
