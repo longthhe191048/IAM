@@ -1,3 +1,5 @@
+<!-- TOC --><a name="portable-executable-pe"></a>
+# Portable Executable (PE)
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 - [Portable Executable (PE)](#portable-executable-pe)
@@ -22,8 +24,7 @@
 
 <!-- TOC end -->
 
-<!-- TOC --><a name="portable-executable-pe"></a>
-# Portable Executable (PE)
+
 
 <!-- TOC --><a name="definition"></a>
 ## Definition
