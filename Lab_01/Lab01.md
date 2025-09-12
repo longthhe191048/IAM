@@ -3,7 +3,7 @@
 - kali linux
 - Win2008Malware.7z
 
-## pre-Lab knowledge
+## Pre-Lab knowledge
 - This lab will be focusing on running Inetsim as an **dns** and **HTTP** service
 - Inetsim: a software allows to simulate common internet services in a lab enviroment.
 - This can help us to analyze behavior of unknown malware
