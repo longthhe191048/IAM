@@ -9,7 +9,7 @@
 - This can help us to analyze behavior of unknown malware
 Some of the service it can replicate:
 
-| Dịch vụ | Cổng | Giao thức  |
+| Service | Port | Protocols  |
 |---------|------|------------|
 | dns     | 53   | udp/tcp    |
 | http    | 80   | tcp        |
