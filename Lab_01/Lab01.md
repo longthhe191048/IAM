@@ -1,6 +1,4 @@
 # LAB 1: Setting Up Environment
-## Lab manual
-
 ## Requirement
 - kali linux
 - Win2008Malware.7z
