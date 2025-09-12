@@ -160,5 +160,5 @@ sudo ./autorun.sh
 https://github.com/user-attachments/assets/94e79d6b-3122-4acc-956b-8bae871cbcc5
 
 ## Reference
-[Reddit](https://www.reddit.com/r/MalwareAnalysis/comments/1iise7n/inetsim_set_up/)
-[inetsim.conf manual](https://manpages.debian.org/testing/inetsim/inetsim.conf.5.en.html)
+- [Reddit](https://www.reddit.com/r/MalwareAnalysis/comments/1iise7n/inetsim_set_up/)
+- [inetsim.conf manual](https://manpages.debian.org/testing/inetsim/inetsim.conf.5.en.html)
