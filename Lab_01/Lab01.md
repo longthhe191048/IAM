@@ -36,6 +36,19 @@ Some of the service it can replicate:
 | chargen | 19   | tcp/udp    |
 | dummy   | 1    | tcp/udp    |
 
+## Topology
+```
+(Isolated lab network, e.g., Host-Only)
+
+┌────────────────────────────┐            DNS + all services → Kali
+│  Windows Server 2008       │  DNS: 192.168.109.133  ─────────────▶
+│  (Target / Client)         │                                    ┌───────────────────────┐
+│  IP: 192.168.109.X/24      │◀────────── all traffic (HTTP/FTP/…)│  Kali Linux           │
+└────────────────────────────┘                                    │  IP: 192.168.109.133  │
+                                                                  │  INetSim              │
+                                                                  └───────────────────────┘
+
+```
 ## Lab walkthrough and explaination
 1. Start the `kali` VM and set it's [network mode](https://github.com/longthhe191048/IAM/blob/main/Lab_01/Network_Mode_VMware.md) to NAT or bridge. I prefer for NAT because we just need both of our VMs can connect to each other.
 
@@ -144,8 +157,7 @@ sudo ./autorun.sh
 ```
 ## Video POC
 
-[![Watch the video](https://img.youtube.com/vi/l_5kwfm5zyQ/0.jpg)](https://www.youtube.com/watch?v=l_5kwfm5zyQ)
-
+https://github.com/user-attachments/assets/94e79d6b-3122-4acc-956b-8bae871cbcc5
 
 ## Reference
 [Reddit](https://www.reddit.com/r/MalwareAnalysis/comments/1iise7n/inetsim_set_up/)
