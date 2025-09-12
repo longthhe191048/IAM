@@ -137,9 +137,14 @@ Everything is done. We will now checking the result
 <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/9b1d0edc-4983-4d5d-b720-14f3ce1301b2" />
 
 ## Scripted version - automated
-
+```
+wget https://raw.githubusercontent.com/longthhe191048/IAM/main/Lab_01/autorun.sh
+chmod +x autorun.sh
+sudo ./autorun.sh
+```
 ## Video POC
 
+[![Watch the video](https://img.youtube.com/vi/l_5kwfm5zyQ/0.jpg)](https://www.youtube.com/watch?v=l_5kwfm5zyQ)
 
 
 ## Reference
