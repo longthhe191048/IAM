@@ -1,4 +1,17 @@
 # LAB 1: Setting Up Environment
+
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [LAB 1: Setting Up Environment](#lab-1-setting-up-environment)
+   * [Requirement](#requirement)
+   * [Pre-Lab knowledge](#pre-lab-knowledge)
+   * [Topology](#topology)
+   * [Lab walkthrough and explaination](#lab-walkthrough-and-explaination)
+   * [Scripted version - automated](#scripted-version---automated)
+   * [Video POC](#video-poc)
+   * [Reference](#reference)
+
+<!-- TOC end -->
 ## Requirement
 - kali linux
 - Win2008Malware.7z
