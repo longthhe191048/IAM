@@ -22,6 +22,9 @@
 * YARA is a tool aimed at helping malware researchers to identify and classify malware samples.
 * Allowed to create descriptions of malware families based on textual or binary patterns
 * Creating rules with wildcard, REGEX, etc...
+* Difference between `yara` and `clamav`:
+  * `clamav`: antivirus scanner
+  * `yara`: write a rule for detection of malwares 
 
 ## Lab walkthrough and definition
 1. First, run and update our package manager
@@ -370,3 +373,4 @@ rule longthhe191048_test{
 * [yara(git)](https://github.com/VirusTotal/yara)
 * [yara(kali)](https://www.kali.org/tools/yara/)
 * [yara module](https://yara.readthedocs.io/en/stable/modules.html)
+* [What is the difference between YARA and CLAMAV?](https://security.stackexchange.com/questions/73676/what-is-the-difference-between-yara-and-clamav)
