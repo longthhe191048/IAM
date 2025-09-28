@@ -104,7 +104,9 @@ docker run -d -p 8081:80 nginx:alpine
 <img width="1397" height="536" alt="image" src="https://github.com/user-attachments/assets/e9506649-e6c4-4f5d-b54b-42851ad80458" />
 <img width="1329" height="822" alt="image" src="https://github.com/user-attachments/assets/d3591c79-2fb5-43a6-ba85-601103edc51b" />
 ### Docker compose
+
 With docker compose, you can run multiple image and link it to each other. Here are sample of `docker-compose.yml`
+
 ```
 version: '2'
 services:
@@ -144,6 +146,7 @@ services:
       - ./logs/nginx/:/var/log/nginx
       - ./nginx_conf:/etc/nginx/conf.d
 ```
+
 ## Installing REMnux docker container
 1. Choose your container [here](https://hub.docker.com/u/remnux)
 <img width="2877" height="1344" alt="image" src="https://github.com/user-attachments/assets/8fb1d1e1-ee03-4c66-bac0-f2924f3b5b97" />
