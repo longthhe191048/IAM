@@ -72,6 +72,7 @@ sudo docker run hello-world
 Get more command in [docker cli cheatsheet](https://docs.docker.com/get-started/docker_cheatsheet.pdf)
 
 ### Docker vs docker-compose
+
 #### Docker
 1. You can deploy a conatiner from an image using docker.
 Create a `dockerfile`
