@@ -140,6 +140,8 @@ open `task manager`
 
 <img width="1030" height="899" alt="image" src="https://github.com/user-attachments/assets/afdc449c-43fd-4821-bb11-de357ec16260" />
 
+Summarize: It's create a process to open Notepad.exe, suspend it for a period of time then continue.
+
 ## Reference
 * [Malware Analysis and Reverse Engineering](https://medium.com/@makt96/malware-analysis-and-reverse-engineering-understanding-windows-internals-such-as-win32-api-to-3c0b1cfd6122)
 * [The Most Commonly Exploited Windows APIs](https://johndcyber.com/the-most-commonly-exploited-windows-apis-a-security-professionals-guide-d53acf201034)
