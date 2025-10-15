@@ -49,3 +49,33 @@ Section below just an lab tutorial but we can already check it from `pe-bear` bu
 
 <img width="1292" height="395" alt="image" src="https://github.com/user-attachments/assets/11d439a1-b14e-4600-8301-8ef78aa3e1f1" />
 
+### Lab 2
+As always, i will examine `Lab12-01.exe` with `pe-bear`
+
+<img width="1580" height="891" alt="image" src="https://github.com/user-attachments/assets/19388143-5c19-407c-9af8-b9050763ed57" />
+
+Checking `import` section
+
+<img width="1248" height="324" alt="image" src="https://github.com/user-attachments/assets/0ad0b95b-9e38-434c-b2ff-13ae07b0633c" />
+
+we can see it import `KERNEL32.dll`, look at it
+
+<img width="1212" height="291" alt="image" src="https://github.com/user-attachments/assets/9c301868-4a47-42da-b576-3e553fe8f963" />
+
+we can see some special function such as `CreateRemoteThread`, `WriteProcessMemory` and `VirtualAllocEx` which use to allocate memory in another program, write to it memory and start a new thread in another process. Let's move to `string` section
+
+<img width="1256" height="597" alt="image" src="https://github.com/user-attachments/assets/2149a959-b698-4321-881d-c2ff50da14c2" />
+
+We could see 3 strings that are suspicious `Lab12-01.dll`, `psapi.dll` and `explorer.exe`. From here, i could give my assumption that it will try to allocate memory from `explorer.exe`. I will decompile it with `IDA`
+
+<img width="1589" height="895" alt="image" src="https://github.com/user-attachments/assets/616fd6aa-75ca-48ba-b456-daac1e27cf11" />
+
+After decompile it, we can see it load 3 function into `psapi.dll` which is to obfuscate us. To summarize it, 
+```
+clear buffers → load psapi.dll → get pointers to PSAPI functions → prepare to enumerate processes/modules and read module (image) names.
+```
+I will track `GetModuleBaseNameA` so i can see which process is watching and confirm my assumption
+
+<img width="461" height="400" alt="image" src="https://github.com/user-attachments/assets/bf5f3337-2057-4069-83b6-db7678af2428" />
+
+It track for `explorer.exe`
