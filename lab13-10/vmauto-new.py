@@ -166,7 +166,6 @@ class VBoxAuto:
         try:
             pinfo(f"Executing in guest: {exe_path} {' '.join(args) if args else ''}")
             env = []
-            # executeProcess signature differs per platform; VirtualBox SDK handles it
             ret = session.console.guest.executeProcess(
                 exe_path, 0, [exe_path] + (args or []), env, user, passwd, 0
             )
@@ -210,13 +209,13 @@ class VMwareAuto:
 
     def set_user(self, user: str, passwd: str) -> None:
         self.user = user
-        self.passwd = passwd
+        self.passwd = passwd  # allow empty string; only None means unset
 
     def _run_cmd(self, cmd: str, args: List[str] = None, guest: bool = False) -> Tuple[str, str]:
         args = args or []
         pargs = [self.vmrun, "-T", self.vmtype]
         if guest:
-            if not self.user or not self.passwd:
+            if self.user is None or self.passwd is None:
                 raise RuntimeError("Guest credentials not set. Call set_user(user, passwd).")
             pargs += ["-gu", self.user, "-gp", self.passwd]
         pargs += [cmd, self.vmx] + args
@@ -225,6 +224,32 @@ class VMwareAuto:
         proc = subprocess.Popen(pargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         out, _ = proc.communicate()
         return out, ""  # vmrun writes everything to stdout
+
+    # Helpers
+    def wait_for_tools(self, timeout_sec: int = 180) -> str:
+        """Wait for VMware Tools to be ready (no guest creds required)."""
+        return self._run_cmd("waitForToolsInGuest", [str(timeout_sec)], guest=False)[0]
+
+    def list_processes(self) -> str:
+        """List processes in guest (requires guest creds + VMware Tools)."""
+        return self._run_cmd("listProcessesInGuest", guest=True)[0]
+
+    def wait_for_process(self, proc_name: str, timeout: int = 180, poll: int = 2) -> None:
+        """
+        Wait until a guest process name appears (case-insensitive).
+        Requires: guest credentials + VMware Tools running in guest.
+        """
+        if self.user is None or self.passwd is None:
+            raise RuntimeError("wait_for_process requires guest credentials (set_user).")
+        end = time.time() + timeout
+        target = proc_name.lower()
+        while time.time() < end:
+            out = self.list_processes().lower()
+            if target in out:
+                pinfo(f"Guest process detected: {proc_name}")
+                return
+            time.sleep(poll)
+        raise TimeoutError(f"Timed out waiting for guest process: {proc_name}")
 
     # High-level ops
     def list(self) -> str:
@@ -244,7 +269,14 @@ class VMwareAuto:
         return self._run_cmd("revertToSnapshot", [snapshot_name])[0]
 
     def screenshot(self, out_file: str) -> str:
-        return self._run_cmd("captureScreen", [out_file], guest=True)[0]
+        # vmrun captureScreen writes to HOST path; ensure dir exists
+        host_dir = os.path.dirname(out_file) or "."
+        try:
+            os.makedirs(host_dir, exist_ok=True)
+        except Exception:
+            pass
+        # captureScreen does not require guest creds
+        return self._run_cmd("captureScreen", [out_file], guest=False)[0]
 
     def copy_to_vm(self, host_src: str, guest_dst: str) -> str:
         if not os.path.isfile(host_src):
@@ -281,13 +313,16 @@ def make_parser() -> argparse.ArgumentParser:
     p_vm.add_argument("--vmrun", help="Path to vmrun (optional)")
     p_vm.add_argument("--user", help="Guest username (for guest ops)")
     p_vm.add_argument("--pass", dest="passwd", help="Guest password (for guest ops)")
+    # Global wait flags (honored by VMware; VBox prints a note)
+    p_vm.add_argument("--wait-proc", help="After action, wait for this guest process to appear (e.g., explorer.exe)")
+    p_vm.add_argument("--wait-timeout", type=int, default=180, help="Seconds to wait for --wait-proc (default 180)")
 
     vm_actions = p_vm.add_subparsers(dest="action", required=True)
     vm_actions.add_parser("start")
     vm_actions.add_parser("stop")
     vm_actions.add_parser("suspend")
     rv = vm_actions.add_parser("revert"); rv.add_argument("snapshot")
-    ls = vm_actions.add_parser("list")  # lists running VMs (global)
+    vm_actions.add_parser("list")  # lists running VMs (global)
     sc = vm_actions.add_parser("screenshot"); sc.add_argument("outfile")
     tovm = vm_actions.add_parser("copy-to-vm"); tovm.add_argument("src"); tovm.add_argument("dst")
     tohost = vm_actions.add_parser("copy-to-host"); tohost.add_argument("src"); tohost.add_argument("dst")
@@ -301,6 +336,9 @@ def make_parser() -> argparse.ArgumentParser:
     p_vb.add_argument("--boot-wait", type=int, default=20)
     p_vb.add_argument("--user", help="Guest username (for guest exec)")
     p_vb.add_argument("--pass", dest="passwd", help="Guest password (for guest exec)")
+    # Accept same flags for symmetry (note: VBox path prints a note)
+    p_vb.add_argument("--wait-proc", help="(VMware-only) Wait for this guest process to appear")
+    p_vb.add_argument("--wait-timeout", type=int, default=180, help="Seconds to wait for --wait-proc (default 180)")
 
     vb_actions = p_vb.add_subparsers(dest="action", required=True)
     vb_actions.add_parser("check")
@@ -313,6 +351,14 @@ def make_parser() -> argparse.ArgumentParser:
 
     return p
 
+def _maybe_wait_for_process_vmware(vmw: VMwareAuto, proc: Optional[str], timeout: int) -> None:
+    if not proc:
+        return
+    try:
+        vmw.wait_for_process(proc, timeout=timeout, poll=2)
+    except Exception as e:
+        perror(f"--wait-proc failed: {e}")
+
 def main(argv: List[str]) -> int:
     parser = make_parser()
     args = parser.parse_args(argv)
@@ -320,30 +366,56 @@ def main(argv: List[str]) -> int:
     if args.provider == "vmware":
         try:
             vmw = VMwareAuto(args.vmx, args.vmrun)
-            if args.user and args.passwd:
+            if args.user is not None and args.passwd is not None:
                 vmw.set_user(args.user, args.passwd)
 
             if args.action == "start":
                 print(vmw.start())
+                # Optional: wait for tools first to speed up proc listing reliability
+                try:
+                    vmw.wait_for_tools(min(args.wait_timeout, 180))
+                except Exception:
+                    pass
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "stop":
                 print(vmw.stop())
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "suspend":
                 print(vmw.suspend())
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "revert":
                 print(vmw.revert(args.snapshot))
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "list":
-                print(subprocess.Popen(["vmrun", "list"], stdout=subprocess.PIPE, text=True).communicate()[0])
+                print(vmw.list())
+
             elif args.action == "screenshot":
                 print(vmw.screenshot(args.outfile))
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "copy-to-vm":
                 print(vmw.copy_to_vm(args.src, args.dst))
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "copy-to-host":
                 print(vmw.copy_to_host(args.src, args.dst))
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "exec":
-                print(vmw.winexec(args.exe, " ".join(args.args)))
+                exe = args.exe
+                tail = " ".join(args.args) if args.args else ""
+                print(vmw.winexec(exe, tail))
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
             elif args.action == "find-mem":
                 files = vmw.find_memory_files()
                 print("\n".join(files) if files else "(none)")
+                _maybe_wait_for_process_vmware(vmw, args.wait_proc, args.wait_timeout)
+
         except Exception as e:
             perror(str(e))
             return 1
@@ -353,6 +425,10 @@ def main(argv: List[str]) -> int:
         if args.action in ("check", "list", "start", "stop", "suspend", "revert", "exec"):
             if not vb.check():
                 return 1
+
+        # Note: VBox path accepts --wait-proc for symmetry, but we can’t list processes here.
+        if args.wait_proc:
+            pinfo("[NOTE] --wait-proc is only supported for VMware (vmrun). Ignoring for VirtualBox.")
 
         if args.action == "check":
             return 0
@@ -371,6 +447,7 @@ def main(argv: List[str]) -> int:
                 perror("Guest credentials required for exec. Provide --user and --pass.")
                 return 1
             vb.winexec(args.exe, args.user, args.passwd, args.args)
+
     return 0
 
 if __name__ == "__main__":
