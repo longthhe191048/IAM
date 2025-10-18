@@ -50,6 +50,6 @@ Get-Item -LiteralPath 'a.txt' -Stream *
 <img width="2038" height="1486" alt="image" src="https://github.com/user-attachments/assets/6c4515c3-4b00-4e81-b564-078cafaad07b" />
 
 ## Reference
-[Alternate Data Streams: A Complete Overview](https://www.ninjaone.com/blog/alternate-data-streams/)
-[File System Date](https://www.sciencedirect.com/topics/computer-science/file-system-date)
-[Detecting timestamp changing utilities](https://www.forensickb.com/2009/02/detecting-timestamp-changing-utlities.html)
+* [Alternate Data Streams: A Complete Overview](https://www.ninjaone.com/blog/alternate-data-streams/)
+* [File System Date](https://www.sciencedirect.com/topics/computer-science/file-system-date)
+* [Detecting timestamp changing utilities](https://www.forensickb.com/2009/02/detecting-timestamp-changing-utlities.html)
