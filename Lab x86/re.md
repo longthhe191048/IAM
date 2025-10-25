@@ -56,3 +56,85 @@ int main(){
 ```
 
 <img width="2879" height="1800" alt="image" src="https://github.com/user-attachments/assets/42a4ae46-b9a8-45c7-8968-84ce5189ce25" />
+
+<img width="1555" height="1092" alt="image" src="https://github.com/user-attachments/assets/c0f5d933-20c5-46ca-9c63-2fe30fd0803c" />
+
+**prologue**
+
+```
+push    ebp
+mov     ebp, esp
+push    ebx
+```
+
+**Epilogue**
+
+```
+leave
+retn
+```
+
+Explaination why it's `leave` [here](https://board.flatassembler.net/topic.php?t=10409), in short:
+
+```
+; leave =
+mov  esp, ebp
+pop  ebp  
+```
+
+## loop
+```
+#include<stdio.h>  
+
+int main(){  
+    int i;
+    printf("For: \n");  
+    for(i=1; i<=5; i++){  
+        printf("%d\n", i);  
+    }  
+    printf("While: \n");
+    i = 1;
+    while(i <= 5){  
+        printf("%d\n", i);  
+        i++;  
+    }
+    printf("Do-While: \n");
+    i = 1;
+    do{
+        printf("%d\n", i);  
+        i++;  
+    } while(i <= 5);
+    return 0;  
+}
+```
+<img width="1226" height="1037" alt="image" src="https://github.com/user-attachments/assets/d4eda11a-63e4-400e-b314-a875a20b2aed" />
+
+<img width="1883" height="1093" alt="image" src="https://github.com/user-attachments/assets/6c221233-cffa-4f88-8d44-aa04346aaf69" />
+
+<img width="945" height="1050" alt="image" src="https://github.com/user-attachments/assets/41d01e90-c35c-4050-8768-99133f545091" />
+
+<img width="1088" height="932" alt="image" src="https://github.com/user-attachments/assets/823a10c8-7c80-45a1-94af-94184de6225f" />
+
+**Detecting loop in asm**
+
+<img width="1765" height="880" alt="image" src="https://github.com/user-attachments/assets/568f045b-4c4f-4f4d-a769-89b850fc406c" />
+
+init counter
+```
+mov     [ebp+var_C], 1
+```
+
+jump and compare
+```
+jmp     short loc_80491C7
+
+loc_80491C7:
+cmp     [ebp+var_C], 5
+jle     short loc_80491AE
+```
+
+add to counter
+```
+add     [ebp+var_C], 1
+```
+
