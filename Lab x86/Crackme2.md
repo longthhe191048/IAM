@@ -1,6 +1,7 @@
 # Crack me 2 Write up
 ## Objective
 * Without patching, Register it to your name.
+<img width="1632" height="1220" alt="image" src="https://github.com/user-attachments/assets/28efe2b1-c38f-46f6-94aa-19e6074dc7e1" />
 
 ## Write up
 Fristly, i installed the challenge file, make a backup and run it
