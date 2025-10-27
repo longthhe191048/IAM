@@ -17,6 +17,6 @@ Overhere, we can see it call `CreateFileA`, calling name `"keyfile.txt"`.
 
 <img width="1191" height="791" alt="image" src="https://github.com/user-attachments/assets/2c83ae6a-cce4-4676-92de-b76fe67914cc" />
 
-Look at the bottom, we can see it calling string from `keyfile.txt` and set it as register name. Let's test it
+Look at the bottom, we can see it read string from `keyfile.txt` and set it as register name. Let's test it
 
 <img width="2184" height="1219" alt="image" src="https://github.com/user-attachments/assets/ba10cf68-1a89-44cf-acb0-ffcd420b6931" />
