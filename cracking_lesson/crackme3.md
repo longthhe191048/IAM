@@ -2,6 +2,7 @@
 ## Objective 
 * Remove the 2 nag screens – one at startup and one at close of program.
 * In the About screen – change status to Registered.
+<img width="1252" height="1222" alt="image" src="https://github.com/user-attachments/assets/5a17e1d8-73c1-4b4e-ba49-c97d4ae01ede" />
 
 ## Write up
 Fristly, i installed the challenge file, make a backup and run it
