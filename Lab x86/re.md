@@ -138,3 +138,61 @@ add to counter
 add     [ebp+var_C], 1
 ```
 
+## Func
+```
+#include<stdio.h>
+
+void printNumbers(){
+    int a = 1, b = 5;
+    for(int i = a; i <= b; i++){
+        printf("%d\n", i);
+    }
+}
+
+void printHello(){
+    printf("Hello, World!\n");
+}
+
+void printSum(int a, int b){
+    int sum = a + b;
+    printf("Sum: %d\n", sum);
+}
+
+int main(){
+    printNumbers();
+    printHello();
+    printSum(3, 7);
+    return 0;
+}
+```
+Compile with `gcc -m32 -no-pie func.c -o func`
+
+<img width="1099" height="810" alt="image" src="https://github.com/user-attachments/assets/f4c72b53-b89d-4aa4-976d-1ff4d96565a9" />
+
+**Function without epilogue**
+```
+call    printNumbers
+call    printHello
+```
+
+**Function with epilogue**
+```
+call    printSum
+add     esp, 10h
+```
+
+Compile with `gcc -m32 -no-pie -O2 func.c -o func_o2`
+
+<img width="1129" height="822" alt="image" src="https://github.com/user-attachments/assets/36125065-250f-457b-8d11-7cda3d25e700" />
+
+**Function without prologue**
+```
+public printHello
+printHello proc near
+; __unwind {
+push    ebx
+call    __x86_get_pc_thunk_bx
+add     ebx, (offset _GLOBAL_OFFSET_TABLE_ - $)
+sub     esp, 14h
+```
+
